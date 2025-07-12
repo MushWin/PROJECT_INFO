@@ -1,0 +1,48 @@
+.timeout-warning {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: #fff3cd;
+    border-left: 4px solid #ffc107;
+    border-radius: 4px;
+    padding: 15px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 9999;
+    max-width: 320px;
+    animation: slideIn 0.3s ease-out;
+}
+
+.timeout-warning-content p {
+    margin: 0 0 10px 0;
+}
+
+.timeout-warning-content p:first-child {
+    font-weight: bold;
+    color: #856404;
+}
+
+.timeout-warning button {
+    background-color: #4a9fe9;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+.timeout-warning button:hover {
+    background-color: #3a8acd;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
