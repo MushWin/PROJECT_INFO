@@ -141,13 +141,29 @@ $conn->close();
 <body>
 <div class="admin-container">
     <aside class="sidebar">
-        <div class="sidebar-header"><h2>Portfolio CMS</h2></div>
+        <div class="sidebar-header">
+            <a href="dashboard.php" class="sidebar-logo">
+                <span class="logo-geo">//</span>
+                <span class="logo-text">Portfolio CMS</span>
+            </a>
+        </div>
         <ul class="sidebar-menu">
-            <li><a href="dashboard.php"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-            <li><a href="edit_portfolio.php"><i class="fa fa-user-circle"></i> Edit Portfolio</a></li>
-            <li class="active"><a href="projects.php"><i class="fa fa-code"></i> Projects</a></li>
-            <li><a href="../index.php"><i class="fa fa-eye"></i> View Site</a></li>
-            <li><a href="../logout.php"><i class="fa fa-sign-out"></i> Logout</a></li>
+            <li>
+                <a href="dashboard.php"><i class="fa fa-dashboard"></i><span>Dashboard</span></a>
+            </li>
+            <li>
+                <a href="edit_portfolio.php"><i class="fa fa-user-circle"></i><span>Edit Portfolio</span></a>
+            </li>
+            <li class="active">
+                <a href="projects.php"><i class="fa fa-code"></i><span>Projects</span></a>
+            </li>
+            <li>
+                <a href="../index.php" target="_blank"><i class="fa fa-eye"></i><span>View Site</span></a>
+            </li>
+            <li class="sidebar-divider"></li>
+            <li class="logout-item">
+                <a href="../logout.php"><i class="fa fa-sign-out"></i><span>Logout</span></a>
+            </li>
         </ul>
     </aside>
 

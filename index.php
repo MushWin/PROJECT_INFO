@@ -70,37 +70,6 @@ if ($portfolioOwnerId > 0) {
     $projectsStmt->close();
 }
 
-$contactSuccess = '';
-$contactError = '';
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['contact_submit'])) {
-    $name = sanitizeInput($_POST['name'] ?? '');
-    $email = sanitizeInput($_POST['email'] ?? '');
-    $subject = sanitizeInput($_POST['subject'] ?? '');
-    $message = sanitizeInput($_POST['message'] ?? '');
-    
-    if (empty($name) || empty($email) || empty($subject) || empty($message)) {
-        $contactError = 'All fields are required.';
-    } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $contactError = 'Please enter a valid email address.';
-    } else {
-        $contactStmt = $conn->prepare("INSERT INTO contact_messages (name, email, subject, message) VALUES (?, ?, ?, ?)");
-        $contactStmt->bind_param("ssss", $name, $email, $subject, $message);
-        
-        if ($contactStmt->execute()) {
-            $contactSuccess = 'Your message has been sent. We will contact you soon!';
-            
-            if ($isLoggedIn) {
-                logActivity($conn, $userId, 'Sent a contact message');
-            }
-        } else {
-            $contactError = 'Failed to send your message. Please try again later.';
-        }
-        
-        $contactStmt->close();
-    }
-}
-
 $conn->close();
 ?>
 
@@ -141,7 +110,6 @@ $conn->close();
             <?php if (!empty($portfolio['certifications'])): ?>
             <a href="#certifications">Certs</a>
             <?php endif; ?>
-            <a href="#contact">Contact</a>
             <div class="nav-divider-v"></div>
             <?php if ($isLoggedIn): ?>
             <a href="admin/dashboard.php" style="display:inline-flex;align-items:center;gap:6px;"><i class="fa fa-th-large"></i> Dashboard</a>
@@ -431,117 +399,6 @@ $conn->close();
                 <p style="color:rgba(255,255,255,0.35);font-size:0.9rem;letter-spacing:1px;text-transform:uppercase;">No projects added yet &mdash; add them from the admin dashboard.</p>
             </div>
             <?php endif; ?>
-        </div>
-    </section>
-
-    <!-- ===== CONTACT SECTION ===== -->
-    <section id="contact" style="background:#f4f5f7;padding:72px 0;border-top:2px solid #09090b;">
-        <div class="container">
-            <div style="text-align:center;margin-bottom:50px;" class="reveal">
-                <span class="section-badge"><i class="fa fa-envelope"></i> &nbsp;Contact</span>
-                <h2 style="margin-top:10px;">Get In Touch</h2>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;" class="contact-grid">
-
-                <!-- Contact Info Cards -->
-                <div style="display:flex;flex-direction:column;gap:20px;" class="reveal-left">
-                    <?php if (!empty($portfolio['email'])): ?>
-                    <div class="contact-info-card" style="display:flex;align-items:center;gap:18px;background:white;padding:22px 24px;border-radius:0;border:2px solid #09090b;border-left:4px solid #1d4ed8;box-shadow:4px 4px 0 rgba(9,9,11,0.15);transition:all 0.28s;">
-                        <span style="width:46px;height:46px;border-radius:0;background:#1d4ed8;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                            <i class="fa fa-envelope" style="color:white;font-size:1.1rem;"></i>
-                        </span>
-                        <div>
-                            <div style="font-size:0.78rem;color:#888;text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:4px;">Email</div>
-                            <div style="font-weight:600;color:#333;"><?php echo htmlspecialchars($portfolio['email']); ?></div>
-                        </div>
-                    </div>
-                    <?php endif; ?>
-
-                    <?php if (!empty($portfolio['phone'])): ?>
-                    <div class="contact-info-card" style="display:flex;align-items:center;gap:18px;background:white;padding:22px 24px;border-radius:0;border:2px solid #09090b;border-left:4px solid #10b981;box-shadow:4px 4px 0 rgba(9,9,11,0.15);transition:all 0.28s;">
-                        <span style="width:46px;height:46px;border-radius:0;background:#10b981;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                            <i class="fa fa-phone" style="color:white;font-size:1.1rem;"></i>
-                        </span>
-                        <div>
-                            <div style="font-size:0.78rem;color:#888;text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:4px;">Phone</div>
-                            <div style="font-weight:600;color:#333;"><?php echo htmlspecialchars($portfolio['phone']); ?></div>
-                        </div>
-                    </div>
-                    <?php endif; ?>
-
-                    <?php if (!empty($portfolio['location'])): ?>
-                    <div class="contact-info-card" style="display:flex;align-items:center;gap:18px;background:white;padding:22px 24px;border-radius:0;border:2px solid #09090b;border-left:4px solid #ef4444;box-shadow:4px 4px 0 rgba(9,9,11,0.15);transition:all 0.28s;">
-                        <span style="width:46px;height:46px;border-radius:0;background:#ef4444;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                            <i class="fa fa-map-marker" style="color:white;font-size:1.2rem;"></i>
-                        </span>
-                        <div>
-                            <div style="font-size:0.78rem;color:#888;text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:4px;">Location</div>
-                            <div style="font-weight:600;color:#333;"><?php echo htmlspecialchars($portfolio['location']); ?></div>
-                        </div>
-                    </div>
-                    <?php endif; ?>
-
-                    <!-- Social links -->
-                    <div style="background:white;padding:22px 24px;border-radius:0;border:2px solid #09090b;border-left:4px solid #1d4ed8;box-shadow:4px 4px 0 rgba(9,9,11,0.15);">
-                        <div style="font-size:0.78rem;color:#888;text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:14px;">Follow Me</div>
-                        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-                            <?php if (!empty($portfolio['linkedin'])): ?>
-                            <a href="<?php echo htmlspecialchars($portfolio['linkedin']); ?>" target="_blank" style="width:40px;height:40px;border-radius:0;background:#0077b5;border:2px solid #09090b;display:flex;align-items:center;justify-content:center;color:white;transition:all 0.28s;box-shadow:3px 3px 0 rgba(9,9,11,0.2);" title="LinkedIn"><i class="fa fa-linkedin"></i></a>
-                            <?php endif; ?>
-                            <?php if (!empty($portfolio['github'])): ?>
-                            <a href="<?php echo htmlspecialchars($portfolio['github']); ?>" target="_blank" style="width:40px;height:40px;border-radius:0;background:#24292e;border:2px solid #09090b;display:flex;align-items:center;justify-content:center;color:white;transition:all 0.28s;box-shadow:3px 3px 0 rgba(9,9,11,0.2);" title="GitHub"><i class="fa fa-github"></i></a>
-                            <?php endif; ?>
-                            <?php if (!empty($portfolio['twitter'])): ?>
-                            <a href="<?php echo htmlspecialchars($portfolio['twitter']); ?>" target="_blank" style="width:40px;height:40px;border-radius:0;background:#1da1f2;border:2px solid #09090b;display:flex;align-items:center;justify-content:center;color:white;transition:all 0.28s;box-shadow:3px 3px 0 rgba(9,9,11,0.2);" title="Twitter"><i class="fa fa-twitter"></i></a>
-                            <?php endif; ?>
-                            <?php if (!empty($portfolio['instagram'])): ?>
-                            <a href="<?php echo htmlspecialchars($portfolio['instagram']); ?>" target="_blank" style="width:40px;height:40px;border-radius:0;background:#e1306c;border:2px solid #09090b;display:flex;align-items:center;justify-content:center;color:white;transition:all 0.28s;box-shadow:3px 3px 0 rgba(9,9,11,0.2);" title="Instagram"><i class="fa fa-instagram"></i></a>
-                            <?php endif; ?>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Contact Form -->
-                <div class="reveal-right" style="background:white;padding:38px;border-radius:0;border:2px solid #09090b;border-top:4px solid #1d4ed8;box-shadow:5px 5px 0 rgba(9,9,11,0.18);">
-                    <?php if ($contactSuccess): ?>
-                    <div style="background:#d4edda;color:#155724;padding:12px 16px;border-radius:0;border-left:4px solid #28a745;margin-bottom:20px;display:flex;align-items:center;gap:10px;font-weight:500;">
-                        <i class="fa fa-check-circle" style="font-size:1.2rem;"></i> <?php echo htmlspecialchars($contactSuccess); ?>
-                    </div>
-                    <?php endif; ?>
-                    <?php if ($contactError): ?>
-                    <div style="background:#f8d7da;color:#721c24;padding:12px 16px;border-radius:0;border-left:4px solid #dc3545;margin-bottom:20px;display:flex;align-items:center;gap:10px;font-weight:500;">
-                        <i class="fa fa-exclamation-circle" style="font-size:1.2rem;"></i> <?php echo htmlspecialchars($contactError); ?>
-                    </div>
-                    <?php endif; ?>
-                    <h3 style="font-size:1.35rem;margin-bottom:24px;color:#1a2332;font-weight:700;">Send a Message</h3>
-                    <form method="POST" action="#contact" id="contactForm">
-                        <input type="hidden" name="contact_submit" value="1">
-                        <div class="form-group">
-                            <label for="name" style="font-weight:600;font-size:0.9rem;color:#555;display:block;margin-bottom:8px;">Full Name</label>
-                            <input type="text" id="name" name="name" placeholder="Your name" required>
-                            <span class="error-feedback"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="email" style="font-weight:600;font-size:0.9rem;color:#555;display:block;margin-bottom:8px;">Email Address</label>
-                            <input type="email" id="email" name="email" placeholder="your@email.com" required>
-                            <span class="error-feedback"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="subject" style="font-weight:600;font-size:0.9rem;color:#555;display:block;margin-bottom:8px;">Subject</label>
-                            <input type="text" id="subject" name="subject" placeholder="What's this about?" required>
-                            <span class="error-feedback"></span>
-                        </div>
-                        <div class="form-group">
-                            <label for="message" style="font-weight:600;font-size:0.9rem;color:#555;display:block;margin-bottom:8px;">Message</label>
-                            <textarea id="message" name="message" rows="5" placeholder="Your message here..." required style="resize:vertical;"></textarea>
-                            <span class="error-feedback"></span>
-                        </div>
-                        <button type="submit" class="btn" style="width:100%;justify-content:center;padding:15px;">
-                            <i class="fa fa-paper-plane"></i> Send Message
-                        </button>
-                    </form>
-                </div>
-            </div>
         </div>
     </section>
 

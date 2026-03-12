@@ -30,6 +30,25 @@ $activityStmt->execute();
 $activityResult = $activityStmt->get_result();
 $activityStmt->close();
 
+// Project count
+$conn->query("CREATE TABLE IF NOT EXISTS `projects` (
+    `id` INT AUTO_INCREMENT PRIMARY KEY,
+    `user_id` INT NOT NULL,
+    `title` VARCHAR(200) NOT NULL,
+    `description` TEXT,
+    `tech_stack` VARCHAR(500),
+    `project_url` VARCHAR(500),
+    `github_url` VARCHAR(500),
+    `image` VARCHAR(500),
+    `sort_order` INT DEFAULT 0,
+    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+$projectCountStmt = $conn->prepare("SELECT COUNT(*) as cnt FROM projects WHERE user_id = ?");
+$projectCountStmt->bind_param("i", $userId);
+$projectCountStmt->execute();
+$projectCount = $projectCountStmt->get_result()->fetch_assoc()['cnt'] ?? 0;
+$projectCountStmt->close();
+
 $conn->close();
 ?>
 
@@ -39,6 +58,8 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Portfolio CMS</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
     <link rel="stylesheet" href="../css/admin.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
@@ -46,16 +67,28 @@ $conn->close();
     <div class="admin-container">
         <aside class="sidebar">
             <div class="sidebar-header">
-                <h2>Portfolio CMS</h2>
+                <a href="dashboard.php" class="sidebar-logo">
+                    <span class="logo-geo">//</span>
+                    <span class="logo-text">Portfolio CMS</span>
+                </a>
             </div>
             <ul class="sidebar-menu">
-                <li class="active"><a href="dashboard.php"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-                <li><a href="edit_portfolio.php">
-                    <i class="fa fa-user-circle"></i> <?php echo $hasPortfolio ? 'Edit Portfolio' : 'Create Portfolio'; ?>
-                </a></li>
-                <li><a href="projects.php"><i class="fa fa-code"></i> Projects</a></li>
-                <li><a href="../index.php"><i class="fa fa-eye"></i> View Site</a></li>
-                <li><a href="../logout.php"><i class="fa fa-sign-out"></i> Logout</a></li>
+                <li class="active">
+                    <a href="dashboard.php"><i class="fa fa-dashboard"></i><span>Dashboard</span></a>
+                </li>
+                <li>
+                    <a href="edit_portfolio.php"><i class="fa fa-user-circle"></i><span><?php echo $hasPortfolio ? 'Edit Portfolio' : 'Create Portfolio'; ?></span></a>
+                </li>
+                <li>
+                    <a href="projects.php"><i class="fa fa-code"></i><span>Projects</span></a>
+                </li>
+                <li>
+                    <a href="../index.php" target="_blank"><i class="fa fa-eye"></i><span>View Site</span></a>
+                </li>
+                <li class="sidebar-divider"></li>
+                <li class="logout-item">
+                    <a href="../logout.php"><i class="fa fa-sign-out"></i><span>Logout</span></a>
+                </li>
             </ul>
         </aside>
         
@@ -69,16 +102,24 @@ $conn->close();
             
             <div class="dashboard-overview">
                 <div class="overview-card">
-                    <i class="fa fa-file-text"></i>
+                    <div class="card-icon"><i class="fa fa-file-text"></i></div>
                     <div class="overview-content">
                         <h3>Portfolio Status</h3>
                         <?php if ($hasPortfolio): ?>
-                            <p class="success">Your portfolio is active</p>
-                            <a href="edit_portfolio.php" class="btn btn-small">Edit Portfolio</a>
+                            <p class="success" style="margin-bottom:10px;"><i class="fa fa-check-circle"></i> Active</p>
+                            <a href="edit_portfolio.php" class="btn-small">Edit Portfolio</a>
                         <?php else: ?>
-                            <p class="warning">No portfolio setup yet</p>
-                            <a href="edit_portfolio.php" class="btn btn-small">Create Portfolio</a>
+                            <p class="warning" style="margin-bottom:10px;"><i class="fa fa-exclamation-circle"></i> Not set up yet</p>
+                            <a href="edit_portfolio.php" class="btn-small">Create Portfolio</a>
                         <?php endif; ?>
+                    </div>
+                </div>
+                <div class="overview-card">
+                    <div class="card-icon"><i class="fa fa-code"></i></div>
+                    <div class="overview-content">
+                        <h3>Projects</h3>
+                        <div class="stat-number"><?php echo $projectCount; ?></div>
+                        <a href="projects.php" class="btn-small">Manage Projects</a>
                     </div>
                 </div>
             </div>
@@ -153,7 +194,10 @@ $conn->close();
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            
+            /* Stagger card animations */
+            document.querySelectorAll('.overview-card, .dashboard-section').forEach((el, i) => {
+                el.style.animationDelay = (i * 0.08) + 's';
+            });
         });
     </script>
 </body>

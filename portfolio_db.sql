@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 15, 2025 at 04:43 PM
+-- Generation Time: Mar 12, 2026 at 03:56 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -175,7 +175,38 @@ INSERT INTO `activity_log` (`id`, `user_id`, `action`, `ip_address`, `user_agent
 (132, 2, 'User logged out', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:138.0) Gecko/20100101 Firefox/138.0', '2025-05-14 14:41:39'),
 (133, 2, 'Login successful', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:138.0) Gecko/20100101 Firefox/138.0', '2025-05-14 14:41:57'),
 (134, 2, 'Login successful', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:138.0) Gecko/20100101 Firefox/138.0', '2025-05-14 14:54:03'),
-(135, 2, 'User logged out', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:138.0) Gecko/20100101 Firefox/138.0', '2025-05-14 14:55:49');
+(135, 2, 'User logged out', '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:138.0) Gecko/20100101 Firefox/138.0', '2025-05-14 14:55:49'),
+(136, 2, 'Login successful', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-11 22:40:03'),
+(137, 2, 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-11 22:47:10'),
+(138, 2, 'Login successful', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-11 22:47:37'),
+(139, 2, 'Updated project: FocusMate', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-11 23:00:55'),
+(140, 2, 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-11 23:02:43'),
+(141, 2, 'Login successful', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-11 23:03:39'),
+(142, 2, 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-11 23:04:05'),
+(143, 2, 'Login successful', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-11 23:05:33'),
+(144, 2, 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-11 23:07:58'),
+(145, 2, 'Login successful', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-11 23:08:48'),
+(146, 2, 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-11 23:09:56'),
+(147, 2, 'Login successful', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-11 23:18:49'),
+(148, 2, 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-11 23:19:51'),
+(149, 2, 'Login successful', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-11 23:20:26'),
+(150, 2, 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-11 23:22:14'),
+(151, 2, 'Login successful', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-11 23:35:05'),
+(152, 2, 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-11 23:36:24'),
+(153, 2, 'Login successful', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-12 09:12:01'),
+(154, 2, 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-12 09:13:50'),
+(155, 2, 'Login successful', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-12 10:08:35'),
+(156, 2, 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-12 10:12:54'),
+(157, 2, 'Login successful', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-12 10:14:56'),
+(158, 2, 'Sent a contact message', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-12 10:15:16'),
+(159, 2, 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-12 10:24:37'),
+(160, 2, 'Login successful', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-12 10:28:29'),
+(161, 2, 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-12 10:31:45'),
+(162, 2, 'Login successful', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-12 10:33:40'),
+(163, 2, 'User logged out', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-12 10:34:56'),
+(164, 2, 'Login successful', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-12 10:35:22'),
+(165, 2, 'Updated project: FocusMate', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-12 10:35:57'),
+(166, 2, 'Updated project: Pestcozam', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36', '2026-03-12 10:36:05');
 
 -- --------------------------------------------------------
 
@@ -211,7 +242,35 @@ CREATE TABLE `portfolio` (
 --
 
 INSERT INTO `portfolio` (`id`, `user_id`, `name`, `title`, `short_bio`, `email`, `phone`, `location`, `education`, `experience`, `skills`, `profile_image`, `cv_link`, `linkedin`, `github`, `about_me`, `contact_section`, `certifications`, `created_at`, `updated_at`) VALUES
-(1, 2, 'Aldwin N. Suarez', 'UI/UX Designer', 'Hi! I’m Aldwin N. Suarez, a 3rd year BSIT student at Western Mindanao State University with a passion for web and mobile development. I enjoy building practical systems that solve real-world problems.', 'aldwinsuarez@gmail.com', '09929508778', 'Ruby Drive, Katatagan Village, Upper Calarian, Zamboanga City', 'Graduated Junior and Senior High School\r\nWMSU, 2017-2020\r\n\r\nCurrently studying Bachelor of Science in Information Technology\r\nWMSU, 2024-2025', 'IT 1B Representative (S.Y. 2023-2022)\r\nPSITS - External-Vice President (S.Y. 2023-2024)\r\nCSC- IT Councilor (S.Y. 2024-2025)', 'Technical Skills:\r\nLanguages: HTML, CSS, PHP, JavaScript(basic), SQL, Java, Dart, Python(basic)\r\nFrameworks/Tools: Flutter, XAMPP, MySQL, Firebase\r\nTools &amp; Platforms: Git, VS Code, Android Studio\r\n\r\nSoft Skills:\r\n-Leadership\r\n-Adaptable\r\n-Critical Thinker\r\n-Problem Solver\r\n-Has great time management', 'uploads/profile/2_profile_1745515099.jpg', 'uploads/cv/2_cv_1747160638.pdf', 'https://www.linkedin.com/in/aldwin-suarez-5a7a6b1a0/', 'https://github.com/MushWin', 'Hi! I’m Aldwin N. Suarez, a 3rd-year BSIT student at Western Mindanao State University (WMSU). I specialize in web and mobile development, and I enjoy building systems that solve real-world problems.\r\n\r\nI\'ve developed several projects like Pestcozam and FocusMate, which have helped sharpen my skills in PHP, MySQL, and Flutter. I\'m always exploring new technologies and love turning ideas into functional apps!', '', '[{\"title\":\"Certificate of Recognition\",\"description\":\"dkaowkd\",\"date\":\"SY 2022-2023\",\"image\":\"uploads\\/certificates\\/2_cert_1747182348_0.jpg\"},{\"title\":\"Certificate of Appreciation\",\"description\":\"dawdw\",\"date\":\"SY 2023-2024\",\"image\":\"uploads\\/certificates\\/2_cert_1747182495_0.jpg\"},{\"title\":\"Service Aware(Bronze)\",\"description\":\"dwad\",\"date\":\"SY 2023-2024\",\"image\":\"uploads\\/certificates\\/2_cert_1747182495_1.jpg\"},{\"title\":\"Certificate of Appreciation\",\"description\":\"dowkaodk\",\"date\":\"May 9th, 2025\",\"image\":\"uploads\\/certificates\\/2_cert_1747182495_2.jpg\"},{\"title\":\"dwad\",\"description\":\"adwofek\",\"date\":\"2022\",\"image\":\"uploads\\/certificates\\/2_cert_1747204106_0.jpg\"}]', '2025-04-25 01:15:57', '2025-05-14 14:54:31');
+(1, 2, 'Aldwin N. Suarez', 'UI/UX Designer', 'I am an enthusiastic Information Technology student and fast learner looking for the opportunity to apply my knowledge in the field of software development, contribute to meaningful projects, and grow professionally in a real-world environment.', 'aldwinsuarez@gmail.com', '0913-456-9883', 'Ruby Drive, Katatagan Village, Upper Calarian, Zamboanga City', 'Graduated Junior and Senior High School\r\nWMSU, 2017-2020\r\n\r\nCurrently studying Bachelor of Science in Information Technology\r\nWMSU, 2024-2025', 'IT 1B Representative (S.Y. 2023-2022)\r\nPSITS - External-Vice President (S.Y. 2023-2024)\r\nCSC- IT Councilor (S.Y. 2024-2025)', 'Technical Skills:\r\nLanguages: HTML, CSS, PHP, JavaScript(basic), SQL, Java, Dart, Python(basic)\r\nFrameworks/Tools: Flutter, XAMPP, MySQL, Firebase\r\nTools &amp; Platforms: Git, VS Code, Android Studio\r\n\r\nSoft Skills:\r\n-Leadership\r\n-Adaptable\r\n-Critical Thinker\r\n-Problem Solver\r\n-Has great time management', 'uploads/profile/2_profile_1745515099.jpg', 'uploads/cv/2_cv_1747160638.pdf', 'https://www.linkedin.com/in/aldwin-suarez-3b77713b0/', 'https://github.com/MushWin', 'Hi! I’m Aldwin N. Suarez, a 3rd-year BSIT student at Western Mindanao State University (WMSU). I specialize in web and mobile development, and I enjoy building systems that solve real-world problems.\r\n\r\nI\'ve developed several projects like Pestcozam and FocusMate, which have helped sharpen my skills in PHP, MySQL, and Flutter. I\'m always exploring new technologies and love turning ideas into functional apps!', '', '[{\"title\":\"Certificate of Recognition\",\"description\":\"\",\"date\":\"SY 2022-2023\",\"image\":\"uploads\\/certificates\\/2_cert_1747182348_0.jpg\"},{\"title\":\"Certificate of Appreciation\",\"description\":\"\",\"date\":\"SY 2023-2024\",\"image\":\"uploads\\/certificates\\/2_cert_1747182495_0.jpg\"},{\"title\":\"Service Aware(Bronze)\",\"description\":\"\",\"date\":\"SY 2023-2024\",\"image\":\"uploads\\/certificates\\/2_cert_1747182495_1.jpg\"},{\"title\":\"Certificate of Appreciation\",\"description\":\"\",\"date\":\"May 9th, 2025\",\"image\":\"uploads\\/certificates\\/2_cert_1747182495_2.jpg\"}]', '2025-04-25 01:15:57', '2026-03-12 10:48:59');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `projects`
+--
+
+CREATE TABLE `projects` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `title` varchar(200) NOT NULL,
+  `description` text DEFAULT NULL,
+  `tech_stack` varchar(500) DEFAULT NULL,
+  `project_url` varchar(500) DEFAULT NULL,
+  `github_url` varchar(500) DEFAULT NULL,
+  `image` varchar(500) DEFAULT NULL,
+  `sort_order` int(11) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `projects`
+--
+
+INSERT INTO `projects` (`id`, `user_id`, `title`, `description`, `tech_stack`, `project_url`, `github_url`, `image`, `sort_order`, `created_at`) VALUES
+(1, 2, 'Pestcozam', 'A web-based pest control and management system built for local community use. Features include user authentication, pest reporting, treatment tracking, and an admin dashboard for managing pest data across different barangay areas.', 'PHP, MySQL, HTML, CSS, JavaScript, XAMPP', 'https://pestcozam.com/#/', '', '', 1, '2026-03-11 14:57:16'),
+(2, 2, 'FocusMate', 'A mobile productivity application that helps students and professionals stay on track with their tasks and study sessions. Includes a Pomodoro-style timer, daily task manager, session history, and progress tracking.', 'Flutter, Dart, Firebase', '', '', '', 2, '2026-03-11 14:57:16'),
+(3, 2, 'PyroSense: Real-Time Fire Detection and Alert Logging System', 'An AI-based fire detection and alert system using visual and thermal analysis.', 'YOLOv4-tiny, CNN, Python, OpenCV, Raspberry Pi', '', 'https://github.com/MushWin/2025_CP_PYROSENSE.git', '', 3, '2026-03-11 14:57:57');
 
 -- --------------------------------------------------------
 
@@ -237,7 +296,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `email`, `first_name`, `last_name`, `phone`, `created_at`, `last_login`, `is_active`) VALUES
-(2, 'Dwin', '$2y$10$JYz1EWQ4wZxXMJRVVjCeNuPYbYcPxYhcVofWn6E8X6KsL.FFOwp46', 'aldwinsuarez@gmail.com', 'Aldwin', 'Suarez', '09929508778', '2025-04-24 22:41:34', '2025-05-14 14:54:03', 1);
+(2, 'Dwin', '$2y$10$JYz1EWQ4wZxXMJRVVjCeNuPYbYcPxYhcVofWn6E8X6KsL.FFOwp46', 'aldwinsuarez@gmail.com', 'Aldwin', 'Suarez', '09929508778', '2025-04-24 22:41:34', '2026-03-12 10:35:22', 1);
 
 --
 -- Indexes for dumped tables
@@ -258,6 +317,12 @@ ALTER TABLE `portfolio`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Indexes for table `projects`
+--
+ALTER TABLE `projects`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -273,13 +338,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `activity_log`
 --
 ALTER TABLE `activity_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=136;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=167;
 
 --
 -- AUTO_INCREMENT for table `portfolio`
 --
 ALTER TABLE `portfolio`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `projects`
+--
+ALTER TABLE `projects`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`
