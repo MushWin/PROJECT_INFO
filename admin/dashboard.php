@@ -53,6 +53,7 @@ $conn->close();
                 <li><a href="edit_portfolio.php">
                     <i class="fa fa-user-circle"></i> <?php echo $hasPortfolio ? 'Edit Portfolio' : 'Create Portfolio'; ?>
                 </a></li>
+                <li><a href="projects.php"><i class="fa fa-code"></i> Projects</a></li>
                 <li><a href="../index.php"><i class="fa fa-eye"></i> View Site</a></li>
                 <li><a href="../logout.php"><i class="fa fa-sign-out"></i> Logout</a></li>
             </ul>

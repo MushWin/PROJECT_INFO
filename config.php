@@ -7,5 +7,13 @@ return [
     'api_version' => '1.0',                        
     'token_expiration' => 3600,                   
     'debug_mode' => true,                           
-    'allowed_origins' => ['http://localhost', 'https://yourdomain.com']
+    'allowed_origins' => ['http://localhost', 'https://yourdomain.com'],
+    'db' => [
+        'host' => 'localhost',
+        'user' => 'root',
+        'pass' => '',
+        'name' => 'portfolio_db',
+        'port' => 3306,
+        'charset' => 'utf8mb4'
+    ]
 ];

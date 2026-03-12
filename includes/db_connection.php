@@ -1,23 +1,29 @@
 <?php
-$servername = "localhost";
-$username = "u302876046_dwin";
-$password = "Dw1ndw1n";
-$dbname = "u302876046_dwin";
+// Load config
+$config = require __DIR__ . '/../config.php';
 
+// Database settings
+$db = $config['db'] ?? [];
+$DB_HOST = $db['host'] ?? 'localhost';
+$DB_USER = $db['user'] ?? 'root';
+$DB_PASS = $db['pass'] ?? '';
+$DB_NAME = $db['name'] ?? 'portfolio_db';
+$DB_PORT = $db['port'] ?? 3306;
+$DB_CHARSET = $db['charset'] ?? 'utf8mb4';
+
+// Create connection
 try {
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+    $conn = new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME, $DB_PORT);
 
-    $conn = new mysqli($servername, $username, $password);
-
-    $conn->set_charset("utf8mb4");
- 
-    $result = $conn->query("SHOW DATABASES LIKE '$dbname'");
-    if ($result->num_rows == 0) {
-        $conn->query("CREATE DATABASE IF NOT EXISTS $dbname CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+    if ($conn->connect_error) {
+        // Log full error for the developer but do not expose credentials to users
+        error_log('Database connection error: ' . $conn->connect_error);
+        // Friendly message shown to the user (used by login.php)
+        die('Database connection failed: Please make sure your MySQL server is running and the credentials are correct.');
     }
-    
-    $conn->select_db($dbname);
-    
+
+    $conn->set_charset($DB_CHARSET);
 } catch (mysqli_sql_exception $e) {
     die("<div style='background-color: #f8d7da; color: #721c24; padding: 10px; margin: 10px 0; border-radius: 4px;'>
             Database connection failed: " . htmlspecialchars($e->getMessage()) . 

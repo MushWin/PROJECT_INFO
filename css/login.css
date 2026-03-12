@@ -106,6 +106,12 @@ button.btn:hover {
     box-shadow: 0 5px 15px rgba(74, 159, 233, 0.3);
 }
 
+/* Prevent login card from shifting on hover */
+.login-box.column:hover {
+    transform: none;
+    box-shadow: 5px 5px 0 rgba(9,9,11,0.18);
+}
+
 .signup-link {
     margin-top: 20px;
     text-align: center;

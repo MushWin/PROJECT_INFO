@@ -41,6 +41,35 @@ if ($result && $result->num_rows > 0) {
 }
 $portfolioStmt->close();
 
+// Fetch projects
+$projects = [];
+$portfolioOwnerId = !empty($portfolio['user_id']) ? (int)$portfolio['user_id'] : 0;
+
+// Auto-create projects table if it doesn't exist
+$conn->query("CREATE TABLE IF NOT EXISTS `projects` (
+    `id`          INT AUTO_INCREMENT PRIMARY KEY,
+    `user_id`     INT NOT NULL,
+    `title`       VARCHAR(200) NOT NULL,
+    `description` TEXT,
+    `tech_stack`  VARCHAR(500),
+    `project_url` VARCHAR(500),
+    `github_url`  VARCHAR(500),
+    `image`       VARCHAR(500),
+    `sort_order`  INT DEFAULT 0,
+    `created_at`  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4");
+
+if ($portfolioOwnerId > 0) {
+    $projectsStmt = $conn->prepare("SELECT * FROM projects WHERE user_id = ? ORDER BY sort_order ASC, id ASC");
+    $projectsStmt->bind_param("i", $portfolioOwnerId);
+    $projectsStmt->execute();
+    $projectsResult = $projectsStmt->get_result();
+    while ($row = $projectsResult->fetch_assoc()) {
+        $projects[] = $row;
+    }
+    $projectsStmt->close();
+}
+
 $contactSuccess = '';
 $contactError = '';
 
@@ -84,64 +113,83 @@ $conn->close();
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/session-timeout.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
     <script src="js/validation.js" defer></script>
     <script src="js/session-timeout.js" defer></script>
 </head>
-<body <?php echo $isLoggedIn ? 'data-logged-in="true"' : ''; ?>>
-    <label class="burger" for="burger">
-        <input type="checkbox" id="burger">
-        <span></span>
-        <span></span>
-        <span></span>
-    </label>
-    
-    <div class="overlay"></div>
-    
-    <nav class="sidebar-nav">
-        <div class="nav-main-items">
-            <a href="#about" class="nav-item nav-icon">
-                <i class="fa fa-user-circle"></i>
-                <span>About</span>
-            </a>
-            <a href="#resume" class="nav-item">
-                <i class="fa fa-file-text"></i>
-                <span>Resume</span>
-            </a>
-            <?php if (!empty($portfolio['certifications'])): ?>
-            <a href="#certifications" class="nav-item">
-                <i class="fa fa-certificate"></i>
-                <span>Certifications</span>
-            </a>
-            <?php endif; ?>
+<body <?php echo $isLoggedIn ? 'data-logged-in="true"' : ''; ?> style="font-family: 'Inter', 'Segoe UI', sans-serif;">
+    <!-- Page loader -->
+    <div id="page-loader" style="position:fixed;inset:0;background:#0d1117;z-index:9999;display:flex;align-items:center;justify-content:center;transition:opacity 0.5s ease;">
+        <div style="text-align:center;">
+            <div style="width:50px;height:50px;border:3px solid rgba(74,159,233,0.2);border-top-color:#4a9fe9;border-radius:50%;animation:rotateLine 0.8s linear infinite;margin:0 auto 16px;"></div>
+            <p style="color:rgba(255,255,255,0.5);font-size:0.85rem;letter-spacing:2px;text-transform:uppercase;">Loading</p>
         </div>
-        
-        <div class="nav-footer">
+    </div>
+    <!-- Geometric Top Navigation -->
+    <nav class="top-nav" id="topNav">
+        <a href="#" class="top-nav-logo">
+            <span class="logo-geo">//</span>&nbsp;<?php echo htmlspecialchars($portfolio['name'] ?? 'Portfolio'); ?>
+        </a>
+        <button class="nav-toggle" id="navToggle" aria-label="Open menu">
+            <span></span><span></span><span></span>
+        </button>
+        <div class="top-nav-links" id="topNavLinks">
+            <a href="#about">About</a>
+            <a href="#resume">Resume</a>
+            <a href="#projects">Projects</a>
+            <?php if (!empty($portfolio['certifications'])): ?>
+            <a href="#certifications">Certs</a>
+            <?php endif; ?>
+            <a href="#contact">Contact</a>
+            <div class="nav-divider-v"></div>
             <?php if ($isLoggedIn): ?>
-                <a href="admin/dashboard.php" class="nav-item">
-                    <i class="fa fa-tachometer"></i>
-                    <span>Dashboard</span>
-                </a>
-                <a href="logout.php" class="nav-item">
-                    <i class="fa fa-sign-out"></i>
-                    <span>Logout</span>
-                </a>
+            <a href="admin/dashboard.php" style="display:inline-flex;align-items:center;gap:6px;"><i class="fa fa-th-large"></i> Dashboard</a>
+            <a href="logout.php" class="nav-cta">Logout</a>
             <?php else: ?>
-                <a href="login.php" class="nav-item">
-                    <i class="fa fa-sign-in"></i>
-                    <span>Login</span>
-                </a>
+            <a href="login.php" class="nav-cta">Login</a>
             <?php endif; ?>
         </div>
     </nav>
+    <div class="overlay" id="mobileNavOverlay"></div>
 
-    <section id="profile" class="container">
-        <div class="profile-content">
-            <div class="profile-image">
-                <img src="<?php echo htmlspecialchars($portfolio['profile_image'] ?? 'images/default-profile.jpg'); ?>" alt="Profile Picture">
+    <section id="profile">
+        <div class="profile-split">
+            <!-- Left: Text Content -->
+            <div class="profile-text-side">
+                <div class="profile-eyebrow">
+                    <span class="eyebrow-line"></span>
+                    Available for opportunities
+                </div>
+                <h1 class="profile-name"><?php echo htmlspecialchars($portfolio['name'] ?? 'My Name'); ?></h1>
+                <h2 class="profile-title"><?php echo htmlspecialchars($portfolio['title'] ?? 'Professional Title'); ?></h2>
+                <p class="profile-description"><?php echo htmlspecialchars($portfolio['short_bio'] ?? 'A short description about me.'); ?></p>
+                <div class="profile-actions">
+                    <a href="#about" class="btn"><i class="fa fa-arrow-down"></i>&nbsp;Explore</a>
+                    <?php if (!empty($portfolio['cv_link'])): ?>
+                    <a href="<?php echo htmlspecialchars($portfolio['cv_link']); ?>" class="btn btn-outline" download><i class="fa fa-download"></i>&nbsp;CV</a>
+                    <?php endif; ?>
+                    <?php if (!empty($portfolio['github'])): ?>
+                    <a href="<?php echo htmlspecialchars($portfolio['github']); ?>" class="btn btn-outline" target="_blank" rel="noopener noreferrer"><i class="fa fa-github"></i>&nbsp;GitHub</a>
+                    <?php endif; ?>
+                </div>
             </div>
-            <h1 class="profile-name"><?php echo htmlspecialchars($portfolio['name'] ?? 'My Name'); ?></h1>
-            <h2 class="profile-title"><?php echo htmlspecialchars($portfolio['title'] ?? 'Professional Title'); ?></h2>
-            <p class="profile-description"><?php echo htmlspecialchars($portfolio['short_bio'] ?? 'A short description about me.'); ?></p>
+            <!-- Right: Geometric Image Frame -->
+            <div class="profile-image-side">
+                <div class="profile-image-frame">
+                    <div class="profile-image">
+                        <img src="<?php echo htmlspecialchars($portfolio['profile_image'] ?? 'images/default-profile.jpg'); ?>" alt="Profile Picture">
+                    </div>
+                    <div class="frame-corner frame-tl"></div>
+                    <div class="frame-corner frame-tr"></div>
+                    <div class="frame-corner frame-bl"></div>
+                    <div class="frame-corner frame-br"></div>
+                </div>
+            </div>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <span class="scroll-arrow"></span>
         </div>
     </section>
 
@@ -150,8 +198,9 @@ $conn->close();
     <?php if (!empty($portfolio)): ?>
     <section id="main-content" class="container section">
         <div class="two-column-layout">
-            <div class="column" id="about">
-                <h2>About Me</h2>
+            <div class="column reveal-left" id="about">
+                <span class="section-badge"><i class="fa fa-user"></i> &nbsp;About</span>
+                <h2 style="text-align:left;">About Me</h2>
                 <div id="about-loader" class="content-loader">
                     <div class="loader">
                         <div class="wrapper">
@@ -167,11 +216,54 @@ $conn->close();
                     <div class="about-text">
                         <?php echo nl2br(htmlspecialchars($portfolio['about_me'] ?? $portfolio['bio'] ?? 'Biography information will appear here.')); ?>
                     </div>
+                    <?php if (!empty($portfolio['skills'])): ?>
+                    <div style="margin-top:28px;">
+                        <h3 style="font-size:1rem;color:#555;font-weight:600;margin-bottom:14px;text-transform:uppercase;letter-spacing:1px;"><i class="fa fa-cogs" style="color:var(--primary-color);margin-right:7px;"></i>Skills &amp; Technologies</h3>
+                        <?php
+                        $skillsRaw = $portfolio['skills'];
+                        $skillsArr = json_decode($skillsRaw, true);
+                        if (!is_array($skillsArr)) {
+                            $skillsArr = preg_split('/\n/', $skillsRaw);
+                        }
+                        // Group into categories: lines ending with ":" start a new group
+                        $groups = [];
+                        $currentGroup = 'Skills';
+                        foreach ($skillsArr as $line) {
+                            $line = trim($line);
+                            if ($line === '') continue;
+                            // Detect a category header (ends with colon, no commas, ≤60 chars)
+                            if (substr($line, -1) === ':' && strpos($line, ',') === false && strlen($line) <= 60) {
+                                $currentGroup = rtrim($line, ':');
+                            } else {
+                                // May be a comma-separated list within one line
+                                $items = preg_split('/,/', $line);
+                                foreach ($items as $item) {
+                                    $item = trim(ltrim($item, '-'));
+                                    if ($item !== '') {
+                                        $groups[$currentGroup][] = $item;
+                                    }
+                                }
+                            }
+                        }
+                    ?>
+                    <?php foreach ($groups as $groupName => $items): ?>
+                    <div class="skill-group">
+                        <div class="skill-group-label"><?php echo htmlspecialchars($groupName); ?></div>
+                        <div class="skills-tags">
+                            <?php foreach ($items as $skill): ?>
+                            <span class="skill-tag"><i class="fa fa-check-circle"></i><?php echo htmlspecialchars(trim($skill)); ?></span>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                    </div>
+                    <?php endif; ?>
                 </div>
             </div>
             
-            <div class="column" id="resume">
-                <h2>Resume</h2>
+            <div class="column reveal-right" id="resume">
+                <span class="section-badge"><i class="fa fa-file-text"></i> &nbsp;Resume</span>
+                <h2 style="text-align:left;">My Resume</h2>
                 <div id="resume-loader" class="content-loader">
                     <div class="loader">
                         <div class="wrapper">
@@ -291,6 +383,168 @@ $conn->close();
     </section>
     <?php endif; ?>
 
+    <!-- ===== PROJECTS SECTION ===== -->
+    <section id="projects" style="background:#09090b;padding:72px 0;border-top:2px solid #09090b;">
+        <div class="container">
+            <div style="margin-bottom:50px;" class="reveal">
+                <span class="section-badge" style="background:#1d4ed8;"><i class="fa fa-code"></i> &nbsp;Projects</span>
+                <h2 style="color:#ffffff;margin-top:10px;">My Projects</h2>
+            </div>
+            <?php if (!empty($projects)): ?>
+            <div class="projects-grid">
+                <?php foreach ($projects as $i => $proj): ?>
+                <div class="project-card reveal" style="transition-delay:<?php echo $i * 80; ?>ms;">
+                    <?php if (!empty($proj['image'])): ?>
+                    <div class="project-card-img">
+                        <img src="<?php echo htmlspecialchars($proj['image']); ?>" alt="<?php echo htmlspecialchars($proj['title']); ?>">
+                    </div>
+                    <?php endif; ?>
+                    <div class="project-card-body">
+                        <h3 class="project-title"><?php echo htmlspecialchars($proj['title']); ?></h3>
+                        <?php if (!empty($proj['description'])): ?>
+                        <p class="project-desc"><?php echo nl2br(htmlspecialchars($proj['description'])); ?></p>
+                        <?php endif; ?>
+                        <?php if (!empty($proj['tech_stack'])): ?>
+                        <div class="project-tech">
+                            <?php foreach (preg_split('/[,]+/', $proj['tech_stack']) as $tech): ?>
+                                <?php $tech = trim($tech); if ($tech): ?>
+                                <span class="tech-badge"><?php echo htmlspecialchars($tech); ?></span>
+                                <?php endif; ?>
+                            <?php endforeach; ?>
+                        </div>
+                        <?php endif; ?>
+                        <div class="project-links">
+                            <?php if (!empty($proj['project_url'])): ?>
+                            <a href="<?php echo htmlspecialchars($proj['project_url']); ?>" target="_blank" rel="noopener noreferrer" class="btn" style="font-size:0.72rem;padding:8px 16px;"><i class="fa fa-external-link"></i> Visit Site</a>
+                            <?php endif; ?>
+                            <?php if (!empty($proj['github_url'])): ?>
+                            <a href="<?php echo htmlspecialchars($proj['github_url']); ?>" target="_blank" rel="noopener noreferrer" class="btn btn-outline" style="font-size:0.72rem;padding:8px 16px;"><i class="fa fa-github"></i> GitHub</a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+                <?php endforeach; ?>
+            </div>
+            <?php else: ?>
+            <div class="project-empty reveal">
+                <i class="fa fa-code" style="font-size:3rem;color:rgba(255,255,255,0.15);display:block;margin-bottom:16px;"></i>
+                <p style="color:rgba(255,255,255,0.35);font-size:0.9rem;letter-spacing:1px;text-transform:uppercase;">No projects added yet &mdash; add them from the admin dashboard.</p>
+            </div>
+            <?php endif; ?>
+        </div>
+    </section>
+
+    <!-- ===== CONTACT SECTION ===== -->
+    <section id="contact" style="background:#f4f5f7;padding:72px 0;border-top:2px solid #09090b;">
+        <div class="container">
+            <div style="text-align:center;margin-bottom:50px;" class="reveal">
+                <span class="section-badge"><i class="fa fa-envelope"></i> &nbsp;Contact</span>
+                <h2 style="margin-top:10px;">Get In Touch</h2>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start;" class="contact-grid">
+
+                <!-- Contact Info Cards -->
+                <div style="display:flex;flex-direction:column;gap:20px;" class="reveal-left">
+                    <?php if (!empty($portfolio['email'])): ?>
+                    <div class="contact-info-card" style="display:flex;align-items:center;gap:18px;background:white;padding:22px 24px;border-radius:0;border:2px solid #09090b;border-left:4px solid #1d4ed8;box-shadow:4px 4px 0 rgba(9,9,11,0.15);transition:all 0.28s;">
+                        <span style="width:46px;height:46px;border-radius:0;background:#1d4ed8;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="fa fa-envelope" style="color:white;font-size:1.1rem;"></i>
+                        </span>
+                        <div>
+                            <div style="font-size:0.78rem;color:#888;text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:4px;">Email</div>
+                            <div style="font-weight:600;color:#333;"><?php echo htmlspecialchars($portfolio['email']); ?></div>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($portfolio['phone'])): ?>
+                    <div class="contact-info-card" style="display:flex;align-items:center;gap:18px;background:white;padding:22px 24px;border-radius:0;border:2px solid #09090b;border-left:4px solid #10b981;box-shadow:4px 4px 0 rgba(9,9,11,0.15);transition:all 0.28s;">
+                        <span style="width:46px;height:46px;border-radius:0;background:#10b981;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="fa fa-phone" style="color:white;font-size:1.1rem;"></i>
+                        </span>
+                        <div>
+                            <div style="font-size:0.78rem;color:#888;text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:4px;">Phone</div>
+                            <div style="font-weight:600;color:#333;"><?php echo htmlspecialchars($portfolio['phone']); ?></div>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+
+                    <?php if (!empty($portfolio['location'])): ?>
+                    <div class="contact-info-card" style="display:flex;align-items:center;gap:18px;background:white;padding:22px 24px;border-radius:0;border:2px solid #09090b;border-left:4px solid #ef4444;box-shadow:4px 4px 0 rgba(9,9,11,0.15);transition:all 0.28s;">
+                        <span style="width:46px;height:46px;border-radius:0;background:#ef4444;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <i class="fa fa-map-marker" style="color:white;font-size:1.2rem;"></i>
+                        </span>
+                        <div>
+                            <div style="font-size:0.78rem;color:#888;text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:4px;">Location</div>
+                            <div style="font-weight:600;color:#333;"><?php echo htmlspecialchars($portfolio['location']); ?></div>
+                        </div>
+                    </div>
+                    <?php endif; ?>
+
+                    <!-- Social links -->
+                    <div style="background:white;padding:22px 24px;border-radius:0;border:2px solid #09090b;border-left:4px solid #1d4ed8;box-shadow:4px 4px 0 rgba(9,9,11,0.15);">
+                        <div style="font-size:0.78rem;color:#888;text-transform:uppercase;letter-spacing:1px;font-weight:600;margin-bottom:14px;">Follow Me</div>
+                        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                            <?php if (!empty($portfolio['linkedin'])): ?>
+                            <a href="<?php echo htmlspecialchars($portfolio['linkedin']); ?>" target="_blank" style="width:40px;height:40px;border-radius:0;background:#0077b5;border:2px solid #09090b;display:flex;align-items:center;justify-content:center;color:white;transition:all 0.28s;box-shadow:3px 3px 0 rgba(9,9,11,0.2);" title="LinkedIn"><i class="fa fa-linkedin"></i></a>
+                            <?php endif; ?>
+                            <?php if (!empty($portfolio['github'])): ?>
+                            <a href="<?php echo htmlspecialchars($portfolio['github']); ?>" target="_blank" style="width:40px;height:40px;border-radius:0;background:#24292e;border:2px solid #09090b;display:flex;align-items:center;justify-content:center;color:white;transition:all 0.28s;box-shadow:3px 3px 0 rgba(9,9,11,0.2);" title="GitHub"><i class="fa fa-github"></i></a>
+                            <?php endif; ?>
+                            <?php if (!empty($portfolio['twitter'])): ?>
+                            <a href="<?php echo htmlspecialchars($portfolio['twitter']); ?>" target="_blank" style="width:40px;height:40px;border-radius:0;background:#1da1f2;border:2px solid #09090b;display:flex;align-items:center;justify-content:center;color:white;transition:all 0.28s;box-shadow:3px 3px 0 rgba(9,9,11,0.2);" title="Twitter"><i class="fa fa-twitter"></i></a>
+                            <?php endif; ?>
+                            <?php if (!empty($portfolio['instagram'])): ?>
+                            <a href="<?php echo htmlspecialchars($portfolio['instagram']); ?>" target="_blank" style="width:40px;height:40px;border-radius:0;background:#e1306c;border:2px solid #09090b;display:flex;align-items:center;justify-content:center;color:white;transition:all 0.28s;box-shadow:3px 3px 0 rgba(9,9,11,0.2);" title="Instagram"><i class="fa fa-instagram"></i></a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Contact Form -->
+                <div class="reveal-right" style="background:white;padding:38px;border-radius:0;border:2px solid #09090b;border-top:4px solid #1d4ed8;box-shadow:5px 5px 0 rgba(9,9,11,0.18);">
+                    <?php if ($contactSuccess): ?>
+                    <div style="background:#d4edda;color:#155724;padding:12px 16px;border-radius:0;border-left:4px solid #28a745;margin-bottom:20px;display:flex;align-items:center;gap:10px;font-weight:500;">
+                        <i class="fa fa-check-circle" style="font-size:1.2rem;"></i> <?php echo htmlspecialchars($contactSuccess); ?>
+                    </div>
+                    <?php endif; ?>
+                    <?php if ($contactError): ?>
+                    <div style="background:#f8d7da;color:#721c24;padding:12px 16px;border-radius:0;border-left:4px solid #dc3545;margin-bottom:20px;display:flex;align-items:center;gap:10px;font-weight:500;">
+                        <i class="fa fa-exclamation-circle" style="font-size:1.2rem;"></i> <?php echo htmlspecialchars($contactError); ?>
+                    </div>
+                    <?php endif; ?>
+                    <h3 style="font-size:1.35rem;margin-bottom:24px;color:#1a2332;font-weight:700;">Send a Message</h3>
+                    <form method="POST" action="#contact" id="contactForm">
+                        <input type="hidden" name="contact_submit" value="1">
+                        <div class="form-group">
+                            <label for="name" style="font-weight:600;font-size:0.9rem;color:#555;display:block;margin-bottom:8px;">Full Name</label>
+                            <input type="text" id="name" name="name" placeholder="Your name" required>
+                            <span class="error-feedback"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" style="font-weight:600;font-size:0.9rem;color:#555;display:block;margin-bottom:8px;">Email Address</label>
+                            <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                            <span class="error-feedback"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject" style="font-weight:600;font-size:0.9rem;color:#555;display:block;margin-bottom:8px;">Subject</label>
+                            <input type="text" id="subject" name="subject" placeholder="What's this about?" required>
+                            <span class="error-feedback"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="message" style="font-weight:600;font-size:0.9rem;color:#555;display:block;margin-bottom:8px;">Message</label>
+                            <textarea id="message" name="message" rows="5" placeholder="Your message here..." required style="resize:vertical;"></textarea>
+                            <span class="error-feedback"></span>
+                        </div>
+                        <button type="submit" class="btn" style="width:100%;justify-content:center;padding:15px;">
+                            <i class="fa fa-paper-plane"></i> Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <footer>
         <div class="container">
             <div class="footer-content">
@@ -344,111 +598,93 @@ $conn->close();
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const burger = document.getElementById('burger');
-            const sidebar = document.querySelector('.sidebar-nav');
-            const overlay = document.querySelector('.overlay');
-            const body = document.body;
-            
-            burger.addEventListener('change', function() {
-                if (this.checked) {
-                    sidebar.classList.add('active');
-                    overlay.classList.add('active');
-                    body.style.overflow = 'hidden';
-                } else {
-                    sidebar.classList.remove('active');
-                    overlay.classList.remove('active');
-                    body.style.overflow = '';
-                }
-            });
-            
-            overlay.addEventListener('click', function() {
-                burger.checked = false;
-                sidebar.classList.remove('active');
-                overlay.classList.remove('active');
-                body.style.overflow = '';
-            });
-            
-            const navLinks = document.querySelectorAll('.sidebar-nav a');
-            navLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    burger.checked = false;
-                    sidebar.classList.remove('active');
-                    overlay.classList.remove('active');
-                    body.style.overflow = '';
-                });
-            });
-            
-            const aboutSection = document.getElementById('about');
-            const resumeSection = document.getElementById('resume');
-            const aboutContent = document.getElementById('about-content');
-            
-            if (aboutSection && resumeSection) {
-                document.addEventListener('DOMContentLoaded', function() {
-                    const observer = new MutationObserver(function(mutations) {
-                        mutations.forEach(function(mutation) {
-                            if (mutation.target.id === 'about-content' && 
-                                mutation.attributeName === 'style' &&
-                                aboutContent.style.display !== 'none') {
-                                const loader = document.getElementById('about-loader');
-                                if (loader) {
-                                    loader.style.display = 'none';
-                                    loader.style.height = '0';
-                                    loader.style.margin = '0';
-                                }
-                            }
-                        });
-                    });
-                    
-                    if (aboutContent) {
-                        observer.observe(aboutContent, { attributes: true });
-                    }
-                });
+        /* ---- Page Loader ---- */
+        window.addEventListener('load', function() {
+            const loader = document.getElementById('page-loader');
+            if (loader) {
+                loader.style.opacity = '0';
+                loader.style.pointerEvents = 'none';
+                setTimeout(() => loader.remove(), 600);
             }
         });
-        
+
         document.addEventListener('DOMContentLoaded', function() {
+
+            /* ---- Geometric Top Nav — mobile toggle ---- */
+            const toggle    = document.getElementById('navToggle');
+            const navLinks  = document.getElementById('topNavLinks');
+            const overlay   = document.getElementById('mobileNavOverlay');
+            const topNav    = document.getElementById('topNav');
+            const body      = document.body;
+
+            function openNav() {
+                navLinks.classList.add('open');
+                overlay.classList.add('active');
+                toggle.classList.add('open');
+                body.style.overflow = 'hidden';
+            }
+            function closeNav() {
+                navLinks.classList.remove('open');
+                overlay.classList.remove('active');
+                toggle.classList.remove('open');
+                body.style.overflow = '';
+            }
+
+            if (toggle) toggle.addEventListener('click', () => navLinks.classList.contains('open') ? closeNav() : openNav());
+            if (overlay) overlay.addEventListener('click', closeNav);
+            document.querySelectorAll('.top-nav-links a').forEach(a => a.addEventListener('click', closeNav));
+
+            /* ---- Scroll: shrink nav + highlight active link ---- */
+            const anchors = document.querySelectorAll('.top-nav-links a[href^="#"]');
+
+            window.addEventListener('scroll', () => {
+                topNav && (window.scrollY > 80 ? topNav.classList.add('scrolled') : topNav.classList.remove('scrolled'));
+
+                let current = '';
+                document.querySelectorAll('section[id], div[id]').forEach(s => {
+                    if (window.scrollY >= s.offsetTop - 130) current = s.id;
+                });
+                anchors.forEach(a => {
+                    a.classList.remove('active');
+                    if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+                });
+            });
+
+            /* ---- Scroll Reveal ---- */
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, i) => {
+                    if (entry.isIntersecting) {
+                        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => observer.observe(el));
+
+            /* ---- Content loaders ---- */
             function showContent(contentId, loaderId) {
                 setTimeout(function() {
-                    const contentElement = document.getElementById(contentId);
-                    const loaderElement = document.getElementById(loaderId);
-                    
-                    if (contentElement && loaderElement) {
-                        loaderElement.style.display = 'none';
-                        contentElement.style.display = 'block';
+                    const el  = document.getElementById(contentId);
+                    const ldr = document.getElementById(loaderId);
+                    if (el && ldr) {
+                        ldr.style.display = 'none';
+                        el.style.display = 'block';
+                        el.style.animation = 'fadeInUp 0.5s ease both';
                     }
-                }, Math.random() * 500 + 300);
+                }, Math.random() * 300 + 150);
             }
-            
             showContent('about-content', 'about-loader');
             showContent('resume-content', 'resume-loader');
             showContent('certifications-content', 'certifications-loader');
         });
-        
+
         <?php if ($isLoggedIn): ?>
-        const inactivityTime = function() {
-            let time;
-            const resetTimer = function() {
-                clearTimeout(time);
-                time = setTimeout(logout, 30 * 60 * 1000);
-            };
-
-            const logout = function() {
-                window.location.href = "logout.php?timeout=1";
-            };
-
-            document.onmousemove = resetTimer;
-            document.onkeypress = resetTimer;
-            document.onload = resetTimer;
-            document.onmousedown = resetTimer;
-            document.ontouchstart = resetTimer;
-            document.onclick = resetTimer;
-            document.onscroll = resetTimer;
-
-            resetTimer();
-        };
-
-        inactivityTime();
+        (function() {
+            let t;
+            const reset = () => { clearTimeout(t); t = setTimeout(() => { window.location.href = 'logout.php?timeout=1'; }, 30 * 60 * 1000); };
+            ['mousemove','keypress','mousedown','touchstart','click','scroll'].forEach(e => document.addEventListener(e, reset));
+            reset();
+        })();
         <?php endif; ?>
     </script>
 </body>
